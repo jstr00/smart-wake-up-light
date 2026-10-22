@@ -1,0 +1,68 @@
+name: smart-wake-up-light
+contract_version: 1
+schema_note: Project-specific CoAP contract, not an OpenAPI or AsyncAPI document
+protocol:
+  name: CoAP
+  transport: UDP
+  port: 5683
+  encrypted: false
+  authenticated: false
+  request_formats:
+    - CON
+    - NON
+  response_policy:
+    CON: Piggybacked ACK containing a response code
+    NON: No response is sent by this firmware
+service_discovery:
+  registration: SRP client
+  service_type: _smart-wakeup._udp
+  default_host_name: smart-wakeup-light-h2
+  default_instance_name: Smart Wakeup Light H2
+  txt:
+    path: /wakeup
+    proto: coap
+    version: "1"
+resources:
+  - path: /wakeup
+    methods:
+      - PUT
+      - POST
+    payload:
+      encoding: ASCII
+      media_type: text/plain
+      formats:
+        - name: duration
+          description: Unsigned decimal seconds, digits only, no signs or spaces
+          examples: ["1", "30", "3600"]
+          minimum: 1
+          maximum_default: 3600
+          maximum_config: CONFIG_WAKEUP_MAX_DURATION_S
+        - name: keepalive
+          exact_value: ping
+          description: No light change
+    request_examples:
+      - method: PUT
+        body: "30"
+        outcome: Start a 30-second wake-up animation
+      - method: POST
+        body: ping
+        outcome: Acknowledge without changing the light
+    response_codes:
+      "2.04":
+        name: Changed
+        meaning: Request parsed and command accepted into queue, or ping accepted
+      "4.00":
+        name: Bad Request
+        meaning: Malformed, empty, too long, zero, negative, overflowing, or out-of-range payload
+      "4.05":
+        name: Method Not Allowed
+        meaning: Method other than PUT or POST on the resource
+      "5.03":
+        name: Service Unavailable
+        meaning: Light control cannot currently accept a command
+    completion_semantics: Responses do not wait for the physical lighting transition
+    rate_limits: No per-client rate limiting implemented
+security:
+  transport: Unencrypted UDP
+  authentication: None
+  access_scope: Any client able to reach the device's CoAP port

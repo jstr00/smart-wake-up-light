@@ -1,0 +1,42 @@
+mainmenu "Smart Wake Up Light"
+
+menu "Wake-up light settings"
+
+config WAKEUP_DEFAULT_BRIGHTNESS
+    int "Initial night light brightness in percent"
+    range 0 100
+    default 10
+
+config WAKEUP_MAX_DURATION_S
+    int "Maximum remote wake-up duration in seconds"
+    range 1 86400
+    default 3600
+
+config WAKEUP_ANIMATION_STEPS
+    int "Target animation updates during wake-up"
+    range 1 5000
+    default 1000
+
+config WAKEUP_BUTTON_DEBOUNCE_MS
+    int "Encoder button debounce interval in milliseconds"
+    range 20 1000
+    default 200
+
+config WAKEUP_ROUTER_PROMOTION_DELAY_S
+    int "Wait before explicit router promotion, seconds"
+    range 1 120
+    default 5
+
+config WAKEUP_SRP_HOST_NAME
+    string "SRP host name"
+    default "smart-wakeup-light-h2"
+
+config WAKEUP_SRP_INSTANCE_NAME
+    string "SRP service instance name"
+    default "Smart Wakeup Light H2"
+
+endmenu
+
+orsource "local/Kconfig"
+
+source "Kconfig.zephyr"

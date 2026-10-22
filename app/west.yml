@@ -1,0 +1,38 @@
+manifest:
+  defaults:
+    remote: upstream
+
+  remotes:
+    - name: upstream
+      url-base: https://github.com/zephyrproject-rtos
+
+  projects:
+    - name: zephyr
+      revision: v4.3-branch
+      path: zephyr
+      west-commands: scripts/west-commands.yml
+
+    - name: hal_espressif
+      revision: af6cfa2e3e7098b596062ab516b80a48a7ba7332
+      path: modules/hal/espressif
+      west-commands: west/west-commands.yml
+
+    - name: hal_nordic
+      revision: 7858281d843468fe53c829995fb63f45a227387a
+      path: modules/hal/nordic
+
+    - name: mcuboot
+      revision: 96576b341ee19f1c3af6622256b0d4f3d408e1e3
+      path: bootloader/mcuboot
+
+    - name: mbedtls
+      revision: c5b06d89c9c498d8fc8659ce31f7e53137b6270f
+      path: modules/crypto/mbedtls
+
+    - name: cmsis_6
+      revision: 30a859f44ef8ab4dc8f84b03ed586fd16ccf9d74
+      path: modules/hal/cmsis_6
+
+    - name: openthread
+      revision: 2bc7712f57af22058770d1ef131ad3da79a0c764
+      path: modules/lib/openthread

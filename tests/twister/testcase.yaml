@@ -1,0 +1,8 @@
+tests:
+  smart_wakeup.unit:
+    harness: ztest
+    platform_allow:
+      - native_sim
+    tags:
+      - unit
+      - wakeup

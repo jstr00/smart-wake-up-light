@@ -1,0 +1,93 @@
+#include <zephyr/dt-bindings/pwm/pwm.h>
+#include <zephyr/dt-bindings/led/led.h>
+
+
+/ {
+    aliases {
+        pwm-ww = &pwm_led1;
+        pwm-cw = &pwm_led0;
+        enc-clk = &enc_clk_node;
+        enc-dt = &enc_dt_node;
+        enc-sw = &enc_sw_node;
+        led-strip = &led_strip;
+    };
+
+    pwmleds {
+        compatible = "pwm-leds";
+        pwm_led0: pwm_led_0 {
+            pwms = <&ledc0 0 1000000 PWM_POLARITY_NORMAL>;
+        };
+        pwm_led1: pwm_led_1 {
+            pwms = <&ledc0 1 1000000 PWM_POLARITY_NORMAL>;
+        };
+    };
+
+    gpio_keys {
+        compatible = "gpio-keys";
+        enc_clk_node: enc_clk {
+            gpios = <&gpio0 10 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+            label = "Encoder CLK";
+        };
+        enc_dt_node: enc_dt {
+            gpios = <&gpio0 11 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+            label = "Encoder DT";
+        };
+        enc_sw_node: enc_sw {
+            gpios = <&gpio0 12 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+            label = "Encoder SW";
+        };
+    };
+};
+
+&pinctrl {
+    ledc0_default: ledc0_default {
+        group1 {
+            pinmux = <LEDC_CH0_GPIO4>,<LEDC_CH1_GPIO5>;
+            output-enable;
+        };
+    };
+};
+
+&ledc0 {
+    pinctrl-0 = <&ledc0_default>;
+    pinctrl-names = "default";
+    status = "okay";
+    #address-cells = <1>;
+    #size-cells = <0>;
+    channel0@0 {
+        reg = <0>;
+        timer = <0>;
+    };
+    channel1@1 {
+        reg = <1>;
+        timer = <0>;
+    };
+};
+
+&i2s_default {
+    group1 {
+                pinmux = <I2S_O_SD_GPIO8>;
+            };
+};
+
+i2s_led: &i2s {
+    status = "okay";
+
+    dmas = <&dma 3>;
+    dma-names = "tx";
+
+    led_strip: ws2812@0 {
+        compatible = "worldsemi,ws2812-i2s";
+
+        reg = <0>;
+        chain-length = <1>;
+        color-mapping = <LED_COLOR_ID_GREEN
+        LED_COLOR_ID_RED
+        LED_COLOR_ID_BLUE>;
+        reset-delay = <500>;
+    };
+};
+
+&dma {
+    status = "okay";
+};
