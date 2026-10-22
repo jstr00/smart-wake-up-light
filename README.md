@@ -37,7 +37,7 @@ Requirements: a compatible Zephyr SDK, the Zephyr build prerequisites, Python, `
 In an empty workspace:
 
 ```sh
-git clone <REPOSITORY_URL> smart-wakeup-light
+git clone https://github.com/jstr00/smart-wake-up-light.git smart-wakeup-light
 cd smart-wakeup-light
 python3 -m venv .venv
 . .venv/bin/activate
